@@ -31,7 +31,7 @@ model User {
 // connect user_id to User table
 model UserToken {
   id                 String   @id @default(cuid())
-  token              String
+  token              String?
   googleRefreshToken String?
   googleAccessToken  String?
   createdAt          DateTime @default(now())

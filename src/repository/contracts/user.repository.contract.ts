@@ -20,4 +20,5 @@ export interface UserRepositoryContract {
     image_url,
     verification_code
   }: CreateUser): Promise<User>;
+  getUserByEmail({ email }: { email: string }): Promise<User | null>;
 }
