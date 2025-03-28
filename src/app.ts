@@ -15,6 +15,7 @@ import {
   SuccessResponse
 } from "./utils/responses";
 import logger from "./utils/logger";
+import v1Router from './routes';
 
 const app = express();
 
@@ -54,7 +55,7 @@ app.use(
   })
 )
 
-// app.use()
+app.use("/v1", v1Router)
 
 app.get("/", (_: Request, res: Response) => {
   try {

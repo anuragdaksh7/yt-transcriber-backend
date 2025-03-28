@@ -17,15 +17,15 @@ interface IJwtHeleper {
 }
 
 class JwtHelper implements IJwtHeleper {
-  generateAccessToken = (user: UserSignData) => {
+  generateAccessToken = (user: UserSignData, expires_in = ENV_CONFIG.JWT_ACCESS_TOKEN_EXPIRY) => {
     return jwt.sign({ user }, ENV_CONFIG.JWT_SECRET, {
-      expiresIn: ENV_CONFIG.JWT_ACCESS_TOKEN_EXPIRY,
+      expiresIn: expires_in
     } as jwt.SignOptions);
   };
 
-  generateRefreshToken = (user: UserSignData) => {
+  generateRefreshToken = (user: UserSignData, expires_in = ENV_CONFIG.JWT_ACCESS_TOKEN_EXPIRY) => {
     return jwt.sign({ user }, ENV_CONFIG.JWT_SECRET, {
-      expiresIn: ENV_CONFIG.JWT_REFRESH_TOKEN_EXPIRY,
+      expiresIn: expires_in,
     } as jwt.SignOptions);
   };
 

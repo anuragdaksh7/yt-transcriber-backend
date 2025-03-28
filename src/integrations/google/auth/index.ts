@@ -142,12 +142,12 @@ class GoogleOAuth implements GoogleOAuthContract {
       const accessToken = this.jwtHelper.generateAccessToken({
         user_id: userRes.id,
         email: userRes.email
-      })
+      }, expires_in)
 
-      const refreshToken = this.jwtHelper.generateAccessToken({
+      const refreshToken = this.jwtHelper.generateRefreshToken({
         user_id: userRes.id,
         email: userRes.email,
-      });
+      }, expires_in);
 
       const updateUserGoogleToken = await this.userTokenRepository.updateGoogleToken({
         userId: userRes.id,
