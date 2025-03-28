@@ -13,28 +13,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-}
-
-model Profile {
-  id     Int     @id @default(autoincrement())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int     @unique
-}
-
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
-  profile Profile?
+  id                String     @id @default(cuid())
+  email             String     @unique
+  first_name        String
+  last_name         String?
+  password          String?
+  provider          String     @default("email")
+  verified          Boolean    @default(false)
+  verification_code String
+  image_url         String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  UserToken         UserToken?
+}
+
+// connect user_id to User table
+model UserToken {
+  id                 String   @id @default(cuid())
+  token              String
+  googleRefreshToken String?
+  googleAccessToken  String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user_id            String   @unique
+  user               User     @relation(fields: [user_id], references: [id])
 }
