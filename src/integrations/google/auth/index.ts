@@ -81,12 +81,13 @@ class GoogleOAuth implements GoogleOAuthContract {
           grant_type: "authorization_code",
         },
       }
+      console.log(options)
 
       const google_response = await axios.request(options)
       return google_response?.data
     } catch (error: any) {
       logger.error(
-        `Error while getting Access token: ${error?.response?.data?.error_description ?? error.message}`,
+        `Error while getting Access token: ${error?.response?.data?.error_description ?? error?.message}`,
         error,
       );
       throw new Error(error?.response?.data?.error_description ?? error.message);
@@ -118,26 +119,25 @@ class GoogleOAuth implements GoogleOAuthContract {
         }
       )
 
-      let userRes = await this.userRepository.getUserByEmail(
-        userResponse?.data?.email
-      )
+      let userRes = await this.userRepository.getUserByEmail({
+        email: userResponse?.data?.email
+      })
       if (!userRes) {
         logger.info("User not found, creating new user")
-      }
-      
-      userRes = await this.userRepository.create({
-        email: userResponse.data.email,
-        first_name: userResponse.data.given_name.split(" ")[0],
-        last_name: userResponse.data.given_name.split(" ")[1] || "",
-        image_url: userResponse.data.picture,
-        provider: "GOOGLE",
-        verified: true,
-        verification_code: ""
-      })
+        userRes = await this.userRepository.create({
+          email: userResponse.data.email,
+          first_name: userResponse.data.given_name.split(" ")[0],
+          last_name: userResponse.data.given_name.split(" ")[1] || "",
+          image_url: userResponse.data.picture,
+          provider: "GOOGLE",
+          verified: true,
+          verification_code: ""
+        })
 
-      await this.userTokenRepository.createUserToken({
-        userId: userRes.id
-      })
+        await this.userTokenRepository.createUserToken({
+          userId: userRes.id
+        })
+      }
 
       const accessToken = this.jwtHelper.generateAccessToken({
         user_id: userRes.id,
@@ -159,7 +159,7 @@ class GoogleOAuth implements GoogleOAuthContract {
       return {
         user: userRes,
         access_token: accessToken,
-        refresh_token: refreshToken
+        // refresh_token: refreshToken
       }
     } catch (error: any) {
       logger.error(`Error in verifying google code: ${error.message}`);

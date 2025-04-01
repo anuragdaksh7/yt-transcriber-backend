@@ -29,11 +29,13 @@ export class UserRepository implements UserRepositoryContract {
 
   getUserByEmail = async ({ email }: { email: string; }): Promise<User | null> => {
     try {
+      console.log(email)
       const user = await this.prismaClient.user.findUnique({
         where: {
           email
         }
       })
+      console.log(user)
 
       return user
     } catch (error: any) {

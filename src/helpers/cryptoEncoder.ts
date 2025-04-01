@@ -15,7 +15,7 @@ class CryptoEncoder implements CryptoHelperContract {
 
   constructor() {
     this.algorithm = "aes-256-cbc"
-    this.key = Buffer.from(ENV_CONFIG.ENCRYPTION_SECRET, "utf8");
+    this.key = Buffer.from(ENV_CONFIG.ENCRYPTION_SECRET, "hex");
     this.iv = Buffer.from(ENV_CONFIG.IV_HEX_STRING, "hex");
   }
 
@@ -27,6 +27,7 @@ class CryptoEncoder implements CryptoHelperContract {
       logger.info(
         `Text to encrypt: ${textString}, using algorithm ${this.algorithm} and key ${this.key}`,
       )
+      console.log(this.algorithm, this.key, this.iv)
       const cipher = crypto.createCipheriv(this.algorithm, this.key, this.iv)
       const encryptedText =
         cipher.update(textString, "utf8", "hex") + cipher.final("hex");

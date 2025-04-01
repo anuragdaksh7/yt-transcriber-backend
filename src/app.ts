@@ -49,7 +49,7 @@ app.use(multer().none());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
+      "http://localhost:4000",
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
   })

@@ -6,9 +6,9 @@ const ENV_CONFIG = {
 
   // encoding
   ENCRYPTION_SECRET:
-    process.env.ENCRYPTION_SECRET ?? "e0e84e4138y2e5creaf2e6d22f33a647",
+    process.env.ENCRYPTION_SECRET ?? "utf8",
   IV_HEX_STRING:
-    process.env.IV_HEX_STRING ?? "1a583e157cfdf819305f7a7409163c89",
+    process.env.IV_HEX_STRING ?? "hex",
 
   JWT_SECRET: process.env.JWT_SECRET || "",
   JWT_REFRESH_TOKEN_EXPIRY: process.env.JWT_REFRESH_TOKEN_EXPIRY || "30d",
