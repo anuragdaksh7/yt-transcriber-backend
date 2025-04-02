@@ -3,16 +3,11 @@ const ENV_CONFIG = {
   GOOGLE_OAUTH_CLIENT_ID: Bun.env.GOOGLE_OAUTH_CLIENT_ID ?? "",
   GOOGLE_OAUTH_CLIENT_SECRET: Bun.env.GOOGLE_OAUTH_CLIENT_SECRET ?? "",
   GOOGLE_OAUTH_REDIRECT_URL: Bun.env.GOOGLE_OAUTH_REDIRECT_URL ?? "",
-
-  // encoding
-  ENCRYPTION_SECRET:
-    process.env.ENCRYPTION_SECRET ?? "utf8",
-  IV_HEX_STRING:
-    process.env.IV_HEX_STRING ?? "hex",
-
+  ENCRYPTION_SECRET: process.env.ENCRYPTION_SECRET ?? "utf8",
+  IV_HEX_STRING: process.env.IV_HEX_STRING ?? "hex",
   JWT_SECRET: process.env.JWT_SECRET || "",
   JWT_REFRESH_TOKEN_EXPIRY: process.env.JWT_REFRESH_TOKEN_EXPIRY || "30d",
   JWT_ACCESS_TOKEN_EXPIRY: process.env.JWT_ACCESS_TOKEN_EXPIRY || "7d",
-}
+};
 
 export default ENV_CONFIG;

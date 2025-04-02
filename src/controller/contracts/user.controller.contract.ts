@@ -9,7 +9,7 @@ export type CreateUserRepository = {
   verified: boolean;
   image_url: string;
   verification_code: string;
-}
+};
 
 export interface UserControllerContract {
   create(req: Request, res: Response): Promise<User>;

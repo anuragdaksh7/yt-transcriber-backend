@@ -28,7 +28,6 @@ model User {
   UserToken         UserToken?
 }
 
-// connect user_id to User table
 model UserToken {
   id                 String   @id @default(cuid())
   token              String?

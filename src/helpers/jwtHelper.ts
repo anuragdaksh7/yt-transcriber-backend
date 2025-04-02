@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
+import type { Request } from "express";
 
 import ENV_CONFIG from "../configs/env.config";
-import type { Request } from "express";
 
 type UserSignData = {
   user_id: string;
@@ -17,13 +17,19 @@ interface IJwtHeleper {
 }
 
 class JwtHelper implements IJwtHeleper {
-  generateAccessToken = (user: UserSignData, expires_in = ENV_CONFIG.JWT_ACCESS_TOKEN_EXPIRY) => {
+  generateAccessToken = (
+    user: UserSignData,
+    expires_in = ENV_CONFIG.JWT_ACCESS_TOKEN_EXPIRY
+  ) => {
     return jwt.sign({ user }, ENV_CONFIG.JWT_SECRET, {
-      expiresIn: expires_in
+      expiresIn: expires_in,
     } as jwt.SignOptions);
   };
 
-  generateRefreshToken = (user: UserSignData, expires_in = ENV_CONFIG.JWT_ACCESS_TOKEN_EXPIRY) => {
+  generateRefreshToken = (
+    user: UserSignData,
+    expires_in = ENV_CONFIG.JWT_ACCESS_TOKEN_EXPIRY
+  ) => {
     return jwt.sign({ user }, ENV_CONFIG.JWT_SECRET, {
       expiresIn: expires_in,
     } as jwt.SignOptions);
