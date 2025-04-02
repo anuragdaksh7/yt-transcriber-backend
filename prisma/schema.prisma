@@ -39,3 +39,48 @@ model UserToken {
   user_id            String   @unique
   user               User     @relation(fields: [user_id], references: [id])
 }
+
+model YoutubeTranscription {
+  id String @id @default(cuid())
+  videoId String @unique
+  imageGenerationPrompt String
+  detailedAnalysis String
+  summary String
+  finalThought String
+  Sentiment Sentiment?
+  Hashtags Hashtags[]
+  Transcript Transcript[]
+}
+
+model Sentiment {
+  id String @id @default(cuid())
+  yt_id String @unique
+  youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
+  overallSentiment String
+  positive Float
+  neutral Float
+  negative Float
+}
+
+model Hashtags {
+  id String @id @default(cuid())
+  yt_id String @unique
+  youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
+}
+
+model Transcript {
+  id String @id @default(cuid())
+  yt_id String @unique
+  youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
+  timestamp Float
+  text String
+  duration Float
+  lang String @default("en")
+}
+
+model Keywords {
+  id String @id @default(cuid())
+  yt_id String @unique
+  key String
+  value String
+}
