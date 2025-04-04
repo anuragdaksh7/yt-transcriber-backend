@@ -1,7 +1,7 @@
 export function parseSentimentAnalysis(jsonString: string) {
   try {
     // Remove the ```json and ``` parts from the string
-    const cleanedString = jsonString.replace(/```json\n|```\n/g, '');
+    const cleanedString = jsonString.replace(/```json\n|```\n|```/g, '');
 
     const data = JSON.parse(cleanedString);
 
@@ -32,6 +32,6 @@ export function parseSentimentAnalysis(jsonString: string) {
   }
 }
 
-// const jsonString = "```json\n{\n  \"sentimental_analysis\": {\n    \"overall_sentiment\": \"Positive and Encouraging\",\n    \"sentiment_score\": {\n      \"positive\": 0.75,\n      \"neutral\": 0.20,\n      \"negative\": 0.05\n    }\n  }\n}\n```\n";
+const jsonString = "```json\n{\n  \"sentimental_analysis\": {\n    \"overall_sentiment\": \"Mixed. Predominantly negative due to the recounting of tragic incidents, but with neutral framing and a concluding positive note.\",\n    \"sentiment_score\": {\n      \"positive\": 0.15,\n      \"neutral\": 0.45,\n      \"negative\": 0.40\n    }\n  }\n}\n```";
 
-// const sentimentData = parseSentimentAnalysis(jsonString);
+const sentimentData = parseSentimentAnalysis(jsonString);

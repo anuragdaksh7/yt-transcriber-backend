@@ -50,6 +50,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:4000",
+      "https://yt-transcriber-frontend.vercel.app"
     ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
   })

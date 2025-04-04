@@ -8,6 +8,7 @@ import { UserRepository } from "../repository/implementation/user.repository";
 import JwtHelper from "../helpers/jwtHelper";
 import YoutubeController from "../controller/implementation/youtube.controller";
 import GoogleGenAIInstance from "../integrations/google/gemini";
+import YoutubeService from "../services/implementation/youtube.service";
 
 const v1Router = express.Router();
 
@@ -20,8 +21,10 @@ const _userRepository = new UserRepository(_prisma)
 const _gemini = new GoogleGenAIInstance(Bun.env.GOOGLE_GEMINI_API_KEY || "")
 const _googleOAuth = new GoogleOAuth(_userTokenRepository, _userRepository, _cryptoEncoder, _jwtHelper)
 
+const _youtubeService = new YoutubeService(_gemini)
+
 const googleOAuthController = new GoogleOAuthController(_googleOAuth)
-const youtubeController = new YoutubeController(_gemini)
+const youtubeController = new YoutubeController(_gemini, _youtubeService)
 
 const OAuthRouter = express.Router();
 

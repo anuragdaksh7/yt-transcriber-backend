@@ -14,7 +14,18 @@ class GoogleGenAIInstance {
 
   generateVideoSummary = async (text: String) => {
     const response = await this.model?.generateContent(`
-      Here is the video's full subtitles can you provide me with a summary for the video, keep it consise and give it to me with no formatting also dont include any extra information just paragraph for the summary: ${text}
+      Here is the video's full subtitles can you provide me with a summary for the video, keep it consise and give it to me with no formatting also dont include any extra information just paragraph for the summary also include keywords and response should be like {
+    "text": "This [topic] uses [method] with <highlight keyword='[Concept 1]'>[Concept 1]</highlight> (like [analogy]). Focus on <highlight keyword='[Concept 2]'>[Concept 2]</highlight> by finding [gap]. Price with <highlight keyword='[Concept 3]'>[Concept 3]</highlight> (outcomes, not [units]). Avoid <highlight keyword='[Concept 4]'>[Concept 4]</highlight>. <highlight keyword='[Concept 5]'>[Concept 5]</highlight> for uniqueness. Use <highlight keyword='[Concept 6]'>[Concept 6]</highlight> for scale.",
+    "keywords": {
+      "[Concept 1]": "[Short Description 1]",
+      "[Concept 2]": "[Short Description 2]",
+      "[Concept 3]": "[Short Description 3]",
+      "[Concept 4]": "[Short Description 4]",
+      "[Concept 5]": "[Short Description 5]",
+      "[Concept 6]": "[Short Description 6]"
+    },
+    "final_thought": "Next [big thing] is [simple combo]."
+  } -> the text field contains the summary of the video, stick rigidly to defined response and number of concepts can be variable and the concepts must be present in the text feild, stick to the format RIGIDLY, also complete the placeholder in final thought by adding big thing and the simple combo about the video: ${text}
     `)
       
     const result = response?.response;
@@ -25,7 +36,7 @@ class GoogleGenAIInstance {
 
   generateVideoDetailedSummary = async (text: String) => {
     const response = await this.model?.generateContent(`
-      Here is the video's full subtitles can you provide me with a detailed summary for the video, keep it consise and give it to me with no formatting also dont include any extra information just paragraph for the summary: ${text}
+      Here is the video's full subtitles can you provide me with a detailed summary for the video, keep it consise and give it to me with no formatting also dont include any extra information just paragraph for the summary with details in about 500 words ${text}
     `)
       
     const result = response?.response;
@@ -48,6 +59,17 @@ class GoogleGenAIInstance {
         also the value can be between 0-1
       dont include any unnecessary text only return this object
       the transcript is: ${text}
+    `)
+      
+    const result = response?.response;
+    const content = result.text();
+
+    return content;
+  }
+
+  getVideoHashTags = async (text: String) => {
+    const response = await this.model?.generateContent(`
+      Here is the video's full subtitles can you provide me with a list of hashtags for the video, keep it consise and give it to me with no formatting also dont include any extra information just return the hashtags in a json array format: ${text}
     `)
       
     const result = response?.response;

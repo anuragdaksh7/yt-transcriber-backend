@@ -12,12 +12,17 @@ import { getYoutubeTranscript } from "../../utils/generateTranscript";
 import { parseSentimentAnalysis } from "../../utils/parsers/sentimentAnalysis.parser";
 
 import type GoogleGenAIInstance from "../../integrations/google/gemini";
+import { parseSummaryJson, processSummary } from "../../utils/parsers/summary.parser";
+import { parseHashtagJson } from "../../utils/parsers/hashtag.parser";
+import type YoutubeService from "../../services/implementation/youtube.service";
 
 class YoutubeController implements YoutubeControllerContract {
   private gemini: GoogleGenAIInstance;
+  private youtubeService: YoutubeService
 
-  constructor(gemini: GoogleGenAIInstance) {
+  constructor(gemini: GoogleGenAIInstance, youtubeService: YoutubeService) {
     this.gemini = gemini;
+    this.youtubeService = youtubeService
   }
 
   getVideoSummary = async (req: any, res: Response): Promise<any> => {
@@ -26,30 +31,11 @@ class YoutubeController implements YoutubeControllerContract {
       if (!url) {
         return BadRequestResponse.send(res, "No url provided");
       }
-      const transcriptions = await getYoutubeTranscript(url);
-      let wholeText = "";
-      for (const transcript of transcriptions) {
-        wholeText += transcript.text + ". ";
-      }
-
-      const summary = await this.gemini.generateVideoSummary(wholeText);
-      const detailedSummary = await this.gemini.generateVideoDetailedSummary(
-        wholeText
-      );
-      const sentimentScoreUnparsed =
-        await this.gemini.generateVideoSenitmentalAnalysis(wholeText);
-      const sentimentalAnalysis = parseSentimentAnalysis(
-        sentimentScoreUnparsed
-      );
+      const response = await this.youtubeService.getVideoData(url);
 
       return SuccessResponse.send(
         res,
-        {
-          summary: summary,
-          detailedSummary: detailedSummary,
-          sentimentScore: sentimentalAnalysis,
-          transcription: transcriptions,
-        },
+        response,
         "Video Summary"
       );
     } catch (error: any) {
