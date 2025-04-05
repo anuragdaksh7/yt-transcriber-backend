@@ -34,6 +34,15 @@ class UserService implements UserServiceContract {
       throw new Error(error)
     }
   }
+
+  getUserByEmail = async (email: string): Promise<User | null> => {
+    try {
+      const user = await this.userRepository.getUserByEmail({ email });
+      return user;
+    } catch (error: any) {
+      throw new Error(error)
+    }
+  }
 }
 
 export {

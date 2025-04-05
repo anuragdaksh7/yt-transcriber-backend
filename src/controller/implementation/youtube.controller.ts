@@ -15,6 +15,7 @@ import type GoogleGenAIInstance from "../../integrations/google/gemini";
 import { parseSummaryJson, processSummary } from "../../utils/parsers/summary.parser";
 import { parseHashtagJson } from "../../utils/parsers/hashtag.parser";
 import type YoutubeService from "../../services/implementation/youtube.service";
+import type { AuthUser } from "../../types";
 
 class YoutubeController implements YoutubeControllerContract {
   private gemini: GoogleGenAIInstance;
@@ -25,13 +26,14 @@ class YoutubeController implements YoutubeControllerContract {
     this.youtubeService = youtubeService
   }
 
-  getVideoSummary = async (req: any, res: Response): Promise<any> => {
+  getVideoSummary = async (req: AuthUser, res: Response): Promise<any> => {
     try {
       const { url } = req.body;
+      const { id } = req.user
       if (!url) {
         return BadRequestResponse.send(res, "No url provided");
       }
-      const response = await this.youtubeService.getVideoData(url);
+      const response = await this.youtubeService.getVideoData(url, id);
 
       return SuccessResponse.send(
         res,

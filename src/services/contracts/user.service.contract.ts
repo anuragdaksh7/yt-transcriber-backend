@@ -18,4 +18,5 @@ export interface UserServiceContract {
     verified,
     image_url
   }: CreateUserService): Promise<User>;
+  getUserByEmail(email: string): Promise<User | null>;
 }

@@ -1,6 +1,6 @@
 import type { YoutubeTranscription } from "@prisma/client";
 
-import type { Hashtags, Keywords, Sentiment, Transcript } from "@prisma/client";
+import type { Hashtags, Keywords, Sentiment } from "@prisma/client";
 
 export type YoutubeTranscriptionExtend = {
   id: string;

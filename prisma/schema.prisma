@@ -14,18 +14,19 @@ datasource db {
 }
 
 model User {
-  id                String     @id @default(cuid())
-  email             String     @unique
-  first_name        String
-  last_name         String?
-  password          String?
-  provider          String     @default("email")
-  verified          Boolean    @default(false)
-  verification_code String
-  image_url         String?
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  UserToken         UserToken?
+  id                             String                           @id @default(cuid())
+  email                          String                           @unique
+  first_name                     String
+  last_name                      String?
+  password                       String?
+  provider                       String                           @default("email")
+  verified                       Boolean                          @default(false)
+  verification_code              String
+  image_url                      String?
+  createdAt                      DateTime                         @default(now())
+  updatedAt                      DateTime                         @updatedAt
+  UserToken                      UserToken?
+  YoutubeTranscriptionUserHybrid YoutubeTranscriptionUserHybrid[]
 }
 
 model UserToken {
@@ -40,50 +41,51 @@ model UserToken {
 }
 
 model YoutubeTranscription {
-  id String @id @default(cuid())
-  videoId String @unique
-  imageGenerationPrompt String
-  detailedAnalysis String
-  summary String
-  finalThought String
-  Sentiment Sentiment?
-  Hashtags Hashtags[]
-  Transcript Transcript[]
-  Keywords Keywords[]
+  id                             String                           @id @default(cuid())
+  videoId                        String                           @unique
+  imageGenerationPrompt          String
+  detailedAnalysis               String
+  summary                        String
+  finalThought                   String
+  user_id String
+  Sentiment                      Sentiment?
+  Hashtags                       Hashtags[]
+  Keywords                       Keywords[]
+  YoutubeTranscriptionUserHybrid YoutubeTranscriptionUserHybrid[]
 }
 
 model Sentiment {
-  id String @id @default(cuid())
-  yt_id String @unique
+  id                   String               @id @default(cuid())
+  yt_id                String               @unique
   youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
-  overallSentiment String
-  positive Float
-  neutral Float
-  negative Float
+  overallSentiment     String
+  positive             Float
+  neutral              Float
+  negative             Float
 }
 
 model Hashtags {
-  id String @id @default(cuid())
-  yt_id String
-  hashtag String
+  id                   String               @id @default(cuid())
+  yt_id                String
+  hashtag              String
   youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
-}
-
-model Transcript {
-  id String @id @default(cuid())
-  yt_id String @unique
-  youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
-  timestamp Float
-  text String
-  duration Float
-  lang String @default("en")
 }
 
 model Keywords {
-  id String @id @default(cuid())
-  yt_id String
+  id                   String               @id @default(cuid())
+  yt_id                String
   youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
-  key String
-  surrounding_text String
-  definition String
+  key                  String
+  surrounding_text     String
+  definition           String
+}
+
+model YoutubeTranscriptionUserHybrid {
+  id                   String               @id @default(cuid())
+  yt_id                String
+  user_id              String
+  name String @default(cuid())
+  views Int @default(0)
+  youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
+  user                 User                 @relation(fields: [user_id], references: [id])
 }

@@ -3,6 +3,7 @@ import type HashTagsRepository from "../../repository/implementation/hashtags.re
 import type KeywordRepository from "../../repository/implementation/keyword.repository";
 import type SentimentRepository from "../../repository/implementation/sentiment.repository";
 import type YoutubeTranscriptionRepository from "../../repository/implementation/youtubeTranscription.repository";
+import type YoutubeUserRepository from "../../repository/implementation/youtubeUser.repository";
 import { getYoutubeTranscript } from "../../utils/generateTranscript";
 import { parseHashtagJson } from "../../utils/parsers/hashtag.parser";
 import { parseSentimentAnalysis } from "../../utils/parsers/sentimentAnalysis.parser";
@@ -15,20 +16,27 @@ class YoutubeService implements YoutubeServiceContract {
   private hashTagsRepository: HashTagsRepository;
   private sentimentRepository: SentimentRepository
   private keywordRepository: KeywordRepository
+  private youtubeUserRepository: YoutubeUserRepository
   
-  constructor(gemini: GoogleGenAIInstance, youtubeTranscriptionRepository: YoutubeTranscriptionRepository, hashTagsRepository: HashTagsRepository, sentimentRepository: SentimentRepository, keywordRepository: KeywordRepository) {
+  constructor(gemini: GoogleGenAIInstance, youtubeTranscriptionRepository: YoutubeTranscriptionRepository, hashTagsRepository: HashTagsRepository, sentimentRepository: SentimentRepository, keywordRepository: KeywordRepository, youtubeUserRepository: YoutubeUserRepository) {
     this.gemini = gemini;
     this.youtubeTranscriptionRepository = youtubeTranscriptionRepository;
     this.hashTagsRepository = hashTagsRepository;
     this.sentimentRepository = sentimentRepository;
     this.keywordRepository = keywordRepository;
+    this.youtubeUserRepository = youtubeUserRepository;
   }
 
-  getVideoData = async (youtubeUrl: string): Promise<YoutubeDataResponse> => {
+  getVideoData = async (youtubeUrl: string, user_id: string): Promise<YoutubeDataResponse> => {
     try {
       const transcriptions = await getYoutubeTranscript(youtubeUrl);
       const existingData = await this.youtubeTranscriptionRepository.getYoutubeTranscription({ videoId: youtubeUrl })
       if (existingData) {
+        let youtubeUser = await this.youtubeUserRepository.getYoutubeUser(existingData.id, user_id)
+        if (!youtubeUser) {
+          youtubeUser = await this.youtubeUserRepository.createYoutubeUser(existingData.id, user_id)
+        }
+
         const keywords: {[key: string]: {
           surrounding_text: string;
           definition: string;
@@ -57,6 +65,7 @@ class YoutubeService implements YoutubeServiceContract {
           hashtags: existingData.Hashtags.map((hashtag) => hashtag.hashtag),
           transcription: transcriptions,
           results: existingData,
+          youtubeUser: youtubeUser
         }
         return returnData
       }
@@ -93,6 +102,8 @@ class YoutubeService implements YoutubeServiceContract {
         imageGenerationPrompt: imageGenerationPrompt,
       })
 
+      let youtubeUser = await this.youtubeUserRepository.createYoutubeUser(youtubeTranscriptionRes.id, user_id)
+
       const hashTags = await this.hashTagsRepository.createHashTags(
         youtubeTranscriptionRes.id,
         hashtags
@@ -116,6 +127,7 @@ class YoutubeService implements YoutubeServiceContract {
         detailedSummary: detailedSummary,
         sentimentScore: sentimentalAnalysis,
         hashtags: hashtags,
+        youtubeUser: youtubeUser,
         transcription: transcriptions,
       }
       return data;
