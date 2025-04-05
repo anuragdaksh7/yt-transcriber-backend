@@ -47,7 +47,6 @@ model YoutubeTranscription {
   detailedAnalysis               String
   summary                        String
   finalThought                   String
-  user_id String
   Sentiment                      Sentiment?
   Hashtags                       Hashtags[]
   Keywords                       Keywords[]
@@ -84,8 +83,8 @@ model YoutubeTranscriptionUserHybrid {
   id                   String               @id @default(cuid())
   yt_id                String
   user_id              String
-  name String @default(cuid())
-  views Int @default(0)
+  name                 String               @default(cuid())
+  views                Int                  @default(0)
   youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
   user                 User                 @relation(fields: [user_id], references: [id])
 }

@@ -3,7 +3,7 @@ name: Backend Build
 on:
   push:
     branches:
-      - main  # Only run on push to the main branch
+      - main
 
 jobs:
   build:
