@@ -77,6 +77,17 @@ class GoogleGenAIInstance {
 
     return content;
   }
+
+  getVideoImageGenerationPrompt = async (text: String) => {
+    const response = await this.model?.generateContent(`
+      Here is the video's full subtitles can you provide me with a prompt for image generation for the video, keep it consise and give it to me with no formatting also dont include any extra information: ${text}
+    `)
+      
+    const result = response?.response;
+    const content = result.text();
+
+    return content;
+  }
 }
 
 export default GoogleGenAIInstance

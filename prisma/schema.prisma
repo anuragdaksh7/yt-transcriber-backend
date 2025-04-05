@@ -63,7 +63,8 @@ model Sentiment {
 
 model Hashtags {
   id String @id @default(cuid())
-  yt_id String @unique
+  yt_id String
+  hashtag String
   youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
 }
 
@@ -79,7 +80,8 @@ model Transcript {
 
 model Keywords {
   id String @id @default(cuid())
-  yt_id String @unique
+  yt_id String
   key String
-  value String
+  surrounding_text String
+  definition String
 }

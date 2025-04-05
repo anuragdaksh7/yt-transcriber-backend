@@ -9,6 +9,10 @@ import JwtHelper from "../helpers/jwtHelper";
 import YoutubeController from "../controller/implementation/youtube.controller";
 import GoogleGenAIInstance from "../integrations/google/gemini";
 import YoutubeService from "../services/implementation/youtube.service";
+import SentimentRepository from "../repository/implementation/sentiment.repository";
+import HashTagsRepository from "../repository/implementation/hashtags.repository";
+import KeywordRepository from "../repository/implementation/keyword.repository";
+import YoutubeTranscriptionRepository from "../repository/implementation/youtubeTranscription.repository";
 
 const v1Router = express.Router();
 
@@ -17,11 +21,15 @@ const _jwtHelper = new JwtHelper();
 
 const _userTokenRepository = new UserTokenRepository(_cryptoEncoder, _prisma);
 const _userRepository = new UserRepository(_prisma)
+const _youtubeTranscriptionRepository = new YoutubeTranscriptionRepository(_prisma)
+const _sentimentRepository = new SentimentRepository(_prisma);
+const _hashTagsRepository = new HashTagsRepository(_prisma);
+const _keywordsRepository = new KeywordRepository(_prisma);
 
 const _gemini = new GoogleGenAIInstance(Bun.env.GOOGLE_GEMINI_API_KEY || "")
 const _googleOAuth = new GoogleOAuth(_userTokenRepository, _userRepository, _cryptoEncoder, _jwtHelper)
 
-const _youtubeService = new YoutubeService(_gemini)
+const _youtubeService = new YoutubeService(_gemini, _youtubeTranscriptionRepository, _hashTagsRepository, _sentimentRepository, _keywordsRepository)
 
 const googleOAuthController = new GoogleOAuthController(_googleOAuth)
 const youtubeController = new YoutubeController(_gemini, _youtubeService)

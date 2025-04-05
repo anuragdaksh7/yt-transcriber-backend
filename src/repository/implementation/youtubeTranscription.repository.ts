@@ -23,6 +23,7 @@ class YoutubeTranscriptionRepository implements YoutubeTranscriptionRepositoryCo
 
       return youtubeTranscription;
     } catch (error: any) {
+      logger.error("Error creating youtubetranscription : ", error)
       throw new Error(error);
     }
   }
@@ -42,3 +43,5 @@ class YoutubeTranscriptionRepository implements YoutubeTranscriptionRepositoryCo
     }
   }
 }
+
+export default YoutubeTranscriptionRepository
