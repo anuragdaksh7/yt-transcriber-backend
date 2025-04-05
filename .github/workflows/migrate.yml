@@ -26,7 +26,7 @@ jobs:
         run: npm install -g bun
 
       - name: Install dependencies using bunx
-        run: bunx install
+        run: bun install
 
       - name: Run Prisma Migrate Deploy
         run: bunx prisma migrate deploy
