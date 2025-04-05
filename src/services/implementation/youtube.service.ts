@@ -5,6 +5,7 @@ import type SentimentRepository from "../../repository/implementation/sentiment.
 import type YoutubeTranscriptionRepository from "../../repository/implementation/youtubeTranscription.repository";
 import type YoutubeUserRepository from "../../repository/implementation/youtubeUser.repository";
 import { getYoutubeTranscript } from "../../utils/generateTranscript";
+import logger from "../../utils/logger";
 import { parseHashtagJson } from "../../utils/parsers/hashtag.parser";
 import { parseSentimentAnalysis } from "../../utils/parsers/sentimentAnalysis.parser";
 import { parseSummaryJson, processSummary } from "../../utils/parsers/summary.parser";
@@ -132,7 +133,8 @@ class YoutubeService implements YoutubeServiceContract {
       }
       return data;
     } catch (error: any) {
-      throw new Error(error.message)
+      logger.error("Error in YoutubeService:", error);
+      throw new Error(error)
     }
   }
 }
