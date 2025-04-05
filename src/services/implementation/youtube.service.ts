@@ -133,7 +133,7 @@ class YoutubeService implements YoutubeServiceContract {
       }
       return data;
     } catch (error: any) {
-      logger.error("Error in YoutubeService:", error.message);
+      logger.error("Error in YoutubeService:", error);
       throw new Error(error)
     }
   }
