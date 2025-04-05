@@ -105,6 +105,8 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+.env.development
+.env.production
 
 # parcel-bundler cache (https://parceljs.org/)
 
@@ -173,3 +175,6 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# PM2 configuration files
+ecosystem.config.cjs
