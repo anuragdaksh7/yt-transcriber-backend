@@ -1,3 +1,5 @@
+import type { YoutubeTranscriptionExtend } from "../../repository/contracts/youtubeTranscription.repository.contract"
+
 export type YoutubeDataResponse = {
   summary: {
     text: string,
@@ -19,7 +21,8 @@ export type YoutubeDataResponse = {
     }
   } | null,
   hashtags: string[],
-  transcription: { text: string, duration: number, offset: number, lang?: string | undefined }[]
+  transcription: { text: string, duration: number, offset: number, lang?: string | undefined }[],
+  results?: YoutubeTranscriptionExtend | null
 }
 
 export interface YoutubeServiceContract {

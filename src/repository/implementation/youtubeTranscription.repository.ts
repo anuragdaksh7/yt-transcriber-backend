@@ -1,5 +1,5 @@
 import type { PrismaClient, YoutubeTranscription } from "@prisma/client";
-import type { YoutubeTranscriptionRepositoryContract } from "../contracts/youtubeTranscription.repository.contract";
+import type { YoutubeTranscriptionExtend, YoutubeTranscriptionRepositoryContract } from "../contracts/youtubeTranscription.repository.contract";
 import logger from "../../utils/logger";
 
 class YoutubeTranscriptionRepository implements YoutubeTranscriptionRepositoryContract {
@@ -28,11 +28,16 @@ class YoutubeTranscriptionRepository implements YoutubeTranscriptionRepositoryCo
     }
   }
 
-  getYoutubeTranscription = async ({ videoId, }: { userId: string; videoId: string; }): Promise<YoutubeTranscription | null> => {
+  getYoutubeTranscription = async ({ videoId, }: { videoId: string; }): Promise<YoutubeTranscriptionExtend | null> => {
     try {
       const youtubeTranscription = await this.prismaClient.youtubeTranscription.findUnique({
         where: {
           videoId,
+        },
+        include: {
+          Hashtags: true,
+          Sentiment: true,
+          Keywords: true,
         }
       })
 

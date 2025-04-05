@@ -49,6 +49,7 @@ model YoutubeTranscription {
   Sentiment Sentiment?
   Hashtags Hashtags[]
   Transcript Transcript[]
+  Keywords Keywords[]
 }
 
 model Sentiment {
@@ -81,6 +82,7 @@ model Transcript {
 model Keywords {
   id String @id @default(cuid())
   yt_id String
+  youtubeTranscription YoutubeTranscription @relation(fields: [yt_id], references: [id])
   key String
   surrounding_text String
   definition String

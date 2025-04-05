@@ -27,6 +27,40 @@ class YoutubeService implements YoutubeServiceContract {
   getVideoData = async (youtubeUrl: string): Promise<YoutubeDataResponse> => {
     try {
       const transcriptions = await getYoutubeTranscript(youtubeUrl);
+      const existingData = await this.youtubeTranscriptionRepository.getYoutubeTranscription({ videoId: youtubeUrl })
+      if (existingData) {
+        const keywords: {[key: string]: {
+          surrounding_text: string;
+          definition: string;
+        }} = {}
+        for (const key of existingData.Keywords) {
+          keywords[key.key] = {
+            surrounding_text: key.surrounding_text,
+            definition: key.definition,
+          }
+        }
+        const returnData = {
+          summary: {
+            text: existingData.summary,
+            final_thought: existingData.finalThought,
+            keywords: keywords,
+          },
+          detailedSummary: existingData.detailedAnalysis,
+          sentimentScore: {
+            sentimentScore: {
+              positive: existingData.Sentiment?.positive || 0,
+              negative: existingData.Sentiment?.negative || 0,
+              neutral: existingData.Sentiment?.neutral || 0,
+            },
+            overallSentiment: existingData.Sentiment?.overallSentiment || "",
+          },
+          hashtags: existingData.Hashtags.map((hashtag) => hashtag.hashtag),
+          transcription: transcriptions,
+          results: existingData,
+        }
+        return returnData
+      }
+
       let wholeText = "";
       for (const transcript of transcriptions) {
         wholeText += transcript.text + ". ";
