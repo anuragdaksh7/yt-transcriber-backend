@@ -1,3 +1,4 @@
+import type { YoutubeTranscriptionUserHybrid } from "@prisma/client"
 import type { YoutubeTranscriptionExtend } from "../../repository/contracts/youtubeTranscription.repository.contract"
 
 export type YoutubeDataResponse = {
@@ -27,4 +28,5 @@ export type YoutubeDataResponse = {
 
 export interface YoutubeServiceContract {
   getVideoData(youtubeUrl: string, user_id: string): Promise<YoutubeDataResponse>;
+  getVideoByVideoUser(youtubeUserId: string): Promise<YoutubeDataResponse | null>
 }

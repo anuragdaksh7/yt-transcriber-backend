@@ -1,6 +1,6 @@
 import type { Response } from "express";
 
-import type { YoutubeControllerContract } from "../contracts/youtube.controller.contract";
+import type { getVideoUserDataRequest, YoutubeControllerContract } from "../contracts/youtube.controller.contract";
 
 import {
   BadRequestResponse,
@@ -28,6 +28,9 @@ class YoutubeController implements YoutubeControllerContract {
 
   getVideoSummary = async (req: AuthUser, res: Response): Promise<any> => {
     try {
+      if (!req.user) {
+        return BadRequestResponse.send(res, "No user found");
+      }
       const { url } = req.body;
       const { id } = req.user
       if (!url) {
@@ -45,6 +48,23 @@ class YoutubeController implements YoutubeControllerContract {
       return InternalServerErrorResponse.send(res, error.message);
     }
   };
+
+  getVideoUserData = async (req: getVideoUserDataRequest, res: Response): Promise<any> => {
+    try {
+      const { id } = req.body;
+      if (!id) {
+        return BadRequestResponse.send(res, "No id provided");
+      }
+      const response = await this.youtubeService.getVideoByVideoUser(id);
+      return SuccessResponse.send(res, response, "Youtube User Data");
+    } catch (error: any) {
+      logger.error(
+        "Error in YoutubeController.getVideoUserData: ",
+        error
+      );
+      return InternalServerErrorResponse.send(res, error.message);
+    }
+  }
 }
 
 export default YoutubeController;

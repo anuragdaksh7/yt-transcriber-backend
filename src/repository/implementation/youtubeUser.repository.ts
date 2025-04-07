@@ -8,7 +8,7 @@ class YoutubeUserRepository implements YoutubeUserRepositoryContract {
     this.prisma = prisma;
   }
 
-  async getYoutubeUser(video_id: string, user_id: string) {
+  getYoutubeUser = async (video_id: string, user_id: string) => {
     return await this.prisma.youtubeTranscriptionUserHybrid.findFirst({
       where: {
         yt_id: video_id,
@@ -17,14 +17,39 @@ class YoutubeUserRepository implements YoutubeUserRepositoryContract {
       include: {
         user: {
           select: {
-            first_name: true
+            first_name: true,
+            id: true
           }
         }
       }
     });
   }
 
-  async createYoutubeUser(video_id: string, user_id: string) {
+  getYoutubeUserById = async (id: string) => {
+    return await this.prisma.youtubeTranscriptionUserHybrid.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        user: {
+          select: {
+            first_name: true,
+            id: true
+          }
+        },
+        youtubeTranscription: {
+          include: {
+            Hashtags: true,
+            Sentiment: true,
+            Keywords: true,
+          }
+        }
+      }
+    });
+  }
+
+
+  createYoutubeUser = async (video_id: string, user_id: string) => {
     return await this.prisma.youtubeTranscriptionUserHybrid.create({
       data: {
         yt_id: video_id,
@@ -33,7 +58,8 @@ class YoutubeUserRepository implements YoutubeUserRepositoryContract {
       include: {
         user: {
           select: {
-            first_name: true
+            first_name: true,
+            id: true
           }
         }
       }

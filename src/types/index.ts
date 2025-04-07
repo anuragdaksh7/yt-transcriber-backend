@@ -13,6 +13,6 @@ export interface AuthUser extends Request {
     image_url: string | null;
     createdAt: Date;
     updatedAt: Date;
-  } | null;
+  };
 }
 

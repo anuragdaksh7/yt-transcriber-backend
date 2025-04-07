@@ -178,3 +178,6 @@ dist
 
 # PM2 configuration files
 ecosystem.config.cjs
+
+0.0.0.0
+BACKEND_PORT

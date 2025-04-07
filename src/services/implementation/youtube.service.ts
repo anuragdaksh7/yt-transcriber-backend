@@ -137,6 +137,63 @@ class YoutubeService implements YoutubeServiceContract {
       throw new Error(error)
     }
   }
+
+  getVideoByVideoUser = async (youtubeUserId: string) => {
+    try {
+      const youtubeUser = await this.youtubeUserRepository.getYoutubeUserById(youtubeUserId)
+      if (!youtubeUser) {
+        logger.info("YouTube user not found")
+        throw new Error("Youtube user not found")
+      }
+
+      const existingData = youtubeUser.youtubeTranscription
+      const user_id = youtubeUser.user_id
+      const transcriptions = await getYoutubeTranscript(existingData.videoId);
+      
+      if (existingData) {
+        let youtubeUser = await this.youtubeUserRepository.getYoutubeUser(existingData.id, user_id)
+        if (!youtubeUser) {
+          youtubeUser = await this.youtubeUserRepository.createYoutubeUser(existingData.id, user_id)
+        }
+
+        const keywords: {[key: string]: {
+          surrounding_text: string;
+          definition: string;
+        }} = {}
+        for (const key of existingData.Keywords) {
+          keywords[key.key] = {
+            surrounding_text: key.surrounding_text,
+            definition: key.definition,
+          }
+        }
+        const returnData = {
+          summary: {
+            text: existingData.summary,
+            final_thought: existingData.finalThought,
+            keywords: keywords,
+          },
+          detailedSummary: existingData.detailedAnalysis,
+          sentimentScore: {
+            sentimentScore: {
+              positive: existingData.Sentiment?.positive || 0,
+              negative: existingData.Sentiment?.negative || 0,
+              neutral: existingData.Sentiment?.neutral || 0,
+            },
+            overallSentiment: existingData.Sentiment?.overallSentiment || "",
+          },
+          hashtags: existingData.Hashtags.map((hashtag) => hashtag.hashtag),
+          transcription: transcriptions,
+          results: existingData,
+          youtubeUser: youtubeUser
+        }
+        return returnData
+      }
+      return null;
+    } catch (error: any) {
+      logger.error("Error in YoutubeService: ", error);
+      throw new Error(error)
+    }
+  }
 }
 
 export default YoutubeService
