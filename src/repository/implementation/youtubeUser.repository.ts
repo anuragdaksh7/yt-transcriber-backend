@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+import type { PrismaClient, YoutubeTranscriptionUserHybrid } from "@prisma/client";
 import type { YoutubeUserRepositoryContract } from "../contracts/youtubeUser.repository.contract";
 
 class YoutubeUserRepository implements YoutubeUserRepositoryContract {
@@ -54,6 +54,26 @@ class YoutubeUserRepository implements YoutubeUserRepositoryContract {
       data: {
         yt_id: video_id,
         user_id,
+      },
+      include: {
+        user: {
+          select: {
+            first_name: true,
+            id: true
+          }
+        }
+      }
+    });
+  }
+
+  updateVideoName = async (id: string, user_id: string, name: string): Promise<YoutubeTranscriptionUserHybrid | null> => {
+    return await this.prisma.youtubeTranscriptionUserHybrid.update({
+      where: {
+        id: id,
+        user_id: user_id
+      },
+      data: {
+        name: name,
       },
       include: {
         user: {

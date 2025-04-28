@@ -28,5 +28,6 @@ export type YoutubeDataResponse = {
 
 export interface YoutubeServiceContract {
   getVideoData(youtubeUrl: string, user_id: string): Promise<YoutubeDataResponse>;
-  getVideoByVideoUser(youtubeUserId: string): Promise<YoutubeDataResponse | null>
+  getVideoByVideoUser(youtubeUserId: string): Promise<YoutubeDataResponse | null>;
+  updateVideoName(id: string, user_id: string, name: string): Promise<YoutubeTranscriptionUserHybrid | null>;
 }

@@ -1,3 +1,4 @@
+import type { YoutubeTranscriptionUserHybrid } from "@prisma/client";
 import type GoogleGenAIInstance from "../../integrations/google/gemini";
 import type HashTagsRepository from "../../repository/implementation/hashtags.repository";
 import type KeywordRepository from "../../repository/implementation/keyword.repository";
@@ -192,6 +193,21 @@ class YoutubeService implements YoutubeServiceContract {
     } catch (error: any) {
       logger.error("Error in YoutubeService: ", error);
       throw new Error(error)
+    }
+  }
+
+  updateVideoName = async (id: string, user_id: string, name: string): Promise<YoutubeTranscriptionUserHybrid | null> => {
+    try {
+      const updatedVideo = await this.youtubeUserRepository.updateVideoName(id, user_id, name)
+      if (!updatedVideo) {
+        logger.info("YouTube user not found")
+        throw new Error("Youtube user not found")
+      }
+
+      return updatedVideo
+    } catch (error: any) {
+      logger.error("Error in YoutubeService: ", error);
+      throw new Error(error)      
     }
   }
 }

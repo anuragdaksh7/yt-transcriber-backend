@@ -65,6 +65,26 @@ class YoutubeController implements YoutubeControllerContract {
       return InternalServerErrorResponse.send(res, error.message);
     }
   }
+
+  updateVideoName = async (req: AuthUser, res: Response): Promise<any> => {
+    try {
+      const { id, name } = req.body;
+      if (!req.user) {
+        return BadRequestResponse.send(res, "No user found");
+      }
+
+      const updatedVideo = await this.youtubeService.updateVideoName(id, req.user.id, name);
+
+      return SuccessResponse.send(
+        res,
+        updatedVideo,
+        "Video Name Updated"
+      );
+    } catch (error: any) {
+      logger.error(error?.mesasge);
+      return InternalServerErrorResponse.send(res, error.message);
+    }
+  }
 }
 
 export default YoutubeController;

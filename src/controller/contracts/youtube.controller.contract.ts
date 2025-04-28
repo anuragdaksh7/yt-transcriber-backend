@@ -10,4 +10,5 @@ export interface getVideoUserDataRequest extends Request {
 export interface YoutubeControllerContract {
   getVideoSummary(req: AuthUser, res: Response): Promise<any>;
   getVideoUserData(req: getVideoUserDataRequest, res: Response): Promise<any>;
+  updateVideoName(req: AuthUser, res: Response): Promise<any>;
 }

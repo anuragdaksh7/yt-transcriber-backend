@@ -50,6 +50,7 @@ googleOAuthRouter.post("/verify", googleOAuthController.verifyCodeForGoogle)
 const youtubeRouter = express.Router()
 youtubeRouter.post("/summary", _authHelper.authenticate, youtubeController.getVideoSummary)
 youtubeRouter.post("/share", _authHelper.authenticate, youtubeController.getVideoUserData)
+youtubeRouter.post("/update-name", _authHelper.authenticate, youtubeController.updateVideoName)
 
 OAuthRouter.use("/google", googleOAuthRouter)
 v1Router.use("/oauth", OAuthRouter)
