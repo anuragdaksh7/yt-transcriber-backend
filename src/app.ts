@@ -2,6 +2,7 @@ import express from "express";
 
 import type { Request, Response } from "express";
 
+import chalk from "chalk";
 import helmet from "helmet";
 import multer from "multer";
 import morgan from "morgan";
@@ -20,28 +21,48 @@ import v1Router from "./routes";
 
 const app = express();
 
+morgan.token("colored-method", (req, res) => {
+  const method = req.method;
+  switch (method) {
+    case "GET":
+      return chalk.bgGreen.black.bold(` ${method} `); // green bg, black text
+    case "POST":
+      return chalk.bgBlue.white.bold(` ${method} `); // blue bg, white text
+    case "PUT":
+      return chalk.bgYellow.black.bold(` ${method} `); // yellow bg, black text
+    case "DELETE":
+      return chalk.bgRed.white.bold(` ${method} `); // red bg, white text
+    default:
+      return chalk.bgWhite.black.bold(` ${method} `); // default
+  }
+});
+
+morgan.token("colored-status", (req, res) => {
+  const status = res.statusCode;
+  if (status >= 500) return chalk.bgRed.white.bold(` ${status} `); // red bg, white text
+  if (status >= 400) return chalk.bgYellow.black.bold(` ${status} `); // yellow bg, black text
+  if (status >= 300) return chalk.bgCyan.black.bold(` ${status} `); // cyan bg, black text
+  if (status >= 200) return chalk.bgGreen.black.bold(` ${status} `); // green bg, black text
+  return chalk.bgWhite.black.bold(` ${status} `); // default
+});
+
+morgan.token("iso-date", () => new Date().toISOString());
+
 app.use(helmet());
+
 app.use(
-  morgan(
-    (tokens, req, res) => {
-      return JSON.stringify({
-        methods: tokens.method(req, res),
-        url: tokens.url(req, res),
-        status: Number.parseFloat(tokens.status(req, res) || "0"),
-        content_length: tokens.res(req, res, "content-length"),
-        response_time: Number.parseFloat(
-          tokens["response-time"](req, res) || "0"
-        ),
-      });
-    },
-    {
-      stream: {
-        write: (message) => {
-          logger.log("info", message);
-        },
-      },
-    }
-  )
+  morgan((tokens, req, res) => {
+    return [
+      tokens["colored-method"](req, res), // Colored HTTP method
+      chalk.white(tokens.url(req, res)), // URL
+      tokens["colored-status"](req, res), // Colored status
+      chalk.gray(tokens.res(req, res, "content-length") + "b"), // Size
+      "-",
+      chalk.magenta(tokens["response-time"](req, res) + " ms"), // Response time
+      chalk.blue(tokens["remote-addr"](req, res)), // IP
+      chalk.gray("[" + tokens["iso-date"](req, res) + "]"), // Date
+    ].join(" ");
+  }),
 );
 
 app.use(bodyParser.json());

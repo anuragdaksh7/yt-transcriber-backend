@@ -88,6 +88,39 @@ class GoogleGenAIInstance {
 
     return content;
   }
+
+  generateTwitterPost = async (text: String) => {
+    const response = await this.model?.generateContent(`
+      Here is the video's full subtitles can you provide me with a tweet for the video, keep it consise and give it to me with no formatting also dont include any extra information: ${text}
+    `)
+      
+    const result = response?.response;
+    const content = result.text();
+
+    return content;
+  }
+
+  generateBlogPostLayout = async (text: String) => {
+    const response = await this.model?.generateContent(`
+      Here is the video's full subtitles can you provide me with a blog post layout for the video, keep it consise and give it to me with no formatting also dont include any extra information, the response should be in markdown format: ${text}
+    `)
+      
+    const result = response?.response;
+    const content = result.text();
+
+    return content;
+  }
+
+  generateLinkedinPost = async (text: String) => {
+    const response = await this.model?.generateContent(`
+      Here is the video's full subtitles can you provide me with a linkedin post for the video, keep it consise and give it to me with no formatting also dont include any extra information: ${text}
+    `)
+      
+    const result = response?.response;
+    const content = result.text();
+
+    return content;
+  }
 }
 
 export default GoogleGenAIInstance
